@@ -1,7 +1,7 @@
 from fastapi import APIRouter
 
 from fabioard.config import settings
-from fabioard.controller.status_dto import StatusDto
+from fabioard.api.dto.status_dto import StatusDto
 
 router = APIRouter()
 

@@ -1,7 +1,7 @@
 from fabioard.domain.protocol.CloudProviderProtocol import CloudProviderProtocol
 
 
-class PictureService():
+class PictureService:
 
     def __init__(self, cloud_provider: CloudProviderProtocol):
         self.cloud_provider = cloud_provider

@@ -1,0 +1,138 @@
+<!DOCTYPE html>
+<html lang="fr" class=" hcebjrxlipi idc0_350"><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Informations en temps réel</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden; /* Empêche le défilement */
+        }
+        img.background {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100vw;
+            height: 100vh;
+            object-fit: cover;
+            transform: translate(-50%, -50%);
+        }
+        .top-left {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            color: white;
+            z-index: 1;
+        }
+        .bottom-center {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            z-index: 1;
+        }
+        .center {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            color: white;
+            z-index: 1;
+            font-size: 24px;
+        }
+    </style>
+</head>
+<body>
+    <img class="background" id="randomImage" src="index_files/2014-01-17-Rennes-003.jpg" alt="Image de fond">
+    
+    <div class="top-left" id="infoContainer" style="color: white;">
+        <img id="weatherIcon" src="index_files/04d@2x.png" alt="Icône météo" width="50">
+        <span id="weatherText">couvert - 14.84°</span>
+        <div id="busTime">Prochain bus à 12:00</div>
+        <div id="dateTime">11/11/2024, 12:50:46 PM</div>
+    </div>
+
+    <script>
+        function analyzeImage(img) {
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            canvas.width = img.width;img
+            canvas.height = img.height;
+            ctx.drawImage(img, 0, 0, img.width, img.height);
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const data = imageData.data;
+
+            let r = 0, g = 0, b = 0;
+            const pixelCount = data.length / 4;
+
+            for (let i = 0; i < data.length; i += 4) {
+                r += data[i];     // Red
+                g += data[i + 1]; // Green
+                b += data[i + 2]; // Blue
+            }
+
+            r = Math.floor(r / pixelCount);
+            g = Math.floor(g / pixelCount);
+            b = Math.floor(b / pixelCount);
+
+            const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
+            const textColor = brightness > 128 ? 'black' : 'white';
+            document.getElementById('infoContainer').style.color = textColor;
+        }
+
+        function fetchRandomImage() {
+            fetch('http://localhost:8090/fabioard-api/v1/pictures/random')
+                .then(response => response.json())
+                .then(data => {
+                    const imgElement = document.getElementById('randomImage');
+                    imgElement.src = data; // Assurez-vous que l'API renvoie un objet avec une propriété 'url'
+                    imgElement.onload = () => analyzeImage(imgElement);
+                })
+                .catch(error => console.error('Erreur:', error));
+        }
+
+        function fetchWeather() {
+            fetch('http://localhost:8090/fabioard-api/v1/weather')
+                .then(response => response.json())
+                .then(data => {
+                    const weatherText = document.getElementById('weatherText');
+                    const weatherIcon = document.getElementById('weatherIcon');
+                    weatherText.textContent = data.description +  " - " + data.temperature + "°"; // Assurez-vous que l'API renvoie une description
+                    weatherIcon.src =  "https://openweathermap.org/img/wn/"+data.icon+"@2x.png"; // Assurez-vous que l'API renvoie l'URL de l'icône
+                })
+                .catch(error => console.error('Erreur:', error));
+        }
+
+        function fetchBusTime() {
+            fetch('http://localhost:8090/fabioard-api/v1/bus/next')
+                .then(response => response.json())
+                .then(data => {
+                    const busTime = document.getElementById('busTime');
+                    busTime.textContent = `Prochain bus à ${data.time}`; // Assurez-vous que l'API renvoie l'heure
+                })
+                .catch(error => console.error('Erreur:', error));
+        }
+
+        function updateDateTime() {
+            const now = new Date();
+            const dateTimeElement = document.getElementById('dateTime');
+            dateTimeElement.textContent = now.toLocaleString(); // Format de date et heure local
+        }
+
+        // Appels initiaux
+        fetchRandomImage();
+        fetchWeather();
+        fetchBusTime();
+        updateDateTime();
+
+        // Appels récurrents
+        setInterval(fetchRandomImage, 10000); // Toutes les heures
+        setInterval(fetchWeather, 10000); // Toutes les heures
+        setInterval(fetchBusTime, 10000); // Toutes les minutes
+        setInterval(updateDateTime, 10000); // Toutes les minutes
+    </script>
+
+
+</body></html>

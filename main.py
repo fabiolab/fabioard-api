@@ -1,6 +1,9 @@
 from fastapi import FastAPI
+from starlette.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
+
 from fabioard.config import settings
-from fabioard.controller import status_controller, picture_controller
+from fabioard.api.controllers import status_controller, picture_controller, weather_controller, bus_controller
 from loguru import logger
 
 BASE_PATH = f"{settings.api_base_path}"
@@ -19,7 +22,32 @@ app.include_router(
 )
 
 app.include_router(
-    picture_controller.router, prefix=settings.api_base_path, tags=["status"]
+    picture_controller.router, prefix=settings.api_base_path, tags=["picture"]
+)
+
+app.include_router(
+    weather_controller.router, prefix=settings.api_base_path, tags=["weather"]
+)
+
+app.include_router(
+    bus_controller.router, prefix=settings.api_base_path, tags=["bus"]
+)
+
+app.mount("/static", StaticFiles(directory="static"), name="static")
+
+origins = [
+    "http://localhost:*",
+    "http://localhost:8090",
+    "http://localhost:8080",
+    "*"
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 if __name__ == "__main__":

@@ -10,5 +10,7 @@ class Settings(BaseSettings):
     pcloud_password: str
     pcloud_image_folderid: int = 13212918957
 
+    openweathermap_api_key: str
+
 
 settings = Settings()

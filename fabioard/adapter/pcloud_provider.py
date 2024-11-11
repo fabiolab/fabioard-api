@@ -1,4 +1,6 @@
+import pathlib
 import random
+from venv import logger
 
 import requests
 from pydantic import BaseModel
@@ -98,9 +100,27 @@ class PCloudProvider(CloudProviderProtocol):
         data = response.json()
         download_url = f"https://{data['hosts'][0]}{data['path']}"
 
-        return download_url
-        # if data["result"] == 0:
-        #     file_response = requests.get(download_url)
-        #     return file_response.content
-        # else:
-        #     raise Exception(f"Error while downloading {file_id} from {download_url}: {data['error']}")
+        if data["result"] == 0:
+            file_response = requests.get(download_url)
+            filename = f"static/{self._get_filename(data['path'])}"
+            logger.info(f"Downloading {file_id} from {download_url} to {filename}")
+            self._clear_pictures()
+            with open(filename, "wb") as file:
+                file.write(file_response.content)
+        else:
+            raise Exception(f"Error while downloading {file_id} from {download_url}: {data['error']}")
+
+        return f"http://localhost:{settings.api_port}/{filename}"
+        # return download_url
+
+    def _get_filename(self, path: str):
+        path = pathlib.Path(path)
+        return path.name
+
+    def _clear_pictures(self):
+        dir = pathlib.Path("static")
+        extensions_images = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'}
+        for file in dir.iterdir():
+            if file.is_file() and file.suffix.lower() in extensions_images:
+                logger.info("Deleting file: {file}")
+                file.unlink()
