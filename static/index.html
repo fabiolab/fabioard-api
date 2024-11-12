@@ -50,7 +50,7 @@
     <div class="top-left" id="infoContainer" style="color: white;">
         <img id="weatherIcon" src="index_files/04d@2x.png" alt="Icône météo" width="50">
         <span id="weatherText">couvert - 14.84°</span>
-        <div id="busTime">Prochain bus à 12:00</div>
+        <div>Prochain bus : <span id="busTime"></span></div>
         <div id="dateTime">11/11/2024, 12:50:46 PM</div>
     </div>
 
@@ -99,7 +99,7 @@
                 .then(data => {
                     const weatherText = document.getElementById('weatherText');
                     const weatherIcon = document.getElementById('weatherIcon');
-                    weatherText.textContent = data.description +  " - " + data.temperature + "°"; // Assurez-vous que l'API renvoie une description
+                    weatherText.textContent = data.temperature + "°C (" + data.feels_like + "°C)"; // Assurez-vous que l'API renvoie une description
                     weatherIcon.src =  "https://openweathermap.org/img/wn/"+data.icon+"@2x.png"; // Assurez-vous que l'API renvoie l'URL de l'icône
                 })
                 .catch(error => console.error('Erreur:', error));
@@ -110,9 +110,33 @@
                 .then(response => response.json())
                 .then(data => {
                     const busTime = document.getElementById('busTime');
-                    busTime.textContent = `Prochain bus à ${data.time}`; // Assurez-vous que l'API renvoie l'heure
+                    updateCountdown(data[0].departure_time);
+                    // busTime.textContent = `Prochain bus à ${data[0].departure_time}`; // Assurez-vous que l'API renvoie l'heure
                 })
                 .catch(error => console.error('Erreur:', error));
+        }
+
+        function updateCountdown(departureTime) {
+            const departureDate = new Date(departureTime);
+            const countdownElement = document.getElementById('busTime');
+
+            const interval = setInterval(() => {
+                const now = new Date();
+                const timeRemaining = departureDate - now;
+
+                if (timeRemaining <= 0) {
+                    clearInterval(interval);
+                    busTime.textContent = "sur le départ !!";
+                } else {
+                    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                    // const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+                    if (minutes < 1) {
+                        busTime.textContent = `moins de 1'`;
+                    } else {
+                        busTime.textContent = `${minutes}'`;
+                    }
+                }
+            }, 1000);
         }
 
         function updateDateTime() {

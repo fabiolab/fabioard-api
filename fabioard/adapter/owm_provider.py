@@ -24,9 +24,9 @@ class OpenWeatherMapProvider:
         return Weather(
             description=response.json()["weather"][0]["description"],
             icon=response.json()["weather"][0]["icon"],
-            temperature=response.json()["main"]["temp"],
-            feels_like=response.json()["main"]["feels_like"],
-            wind_speed=response.json()["wind"]["speed"],
+            temperature=int(response.json()["main"]["temp"]),
+            feels_like=int(response.json()["main"]["feels_like"]),
+            wind_speed=int(response.json()["wind"]["speed"]),
             sunrise=response.json()["sys"]["sunrise"],
             sunset=response.json()["sys"]["sunset"],
         )
