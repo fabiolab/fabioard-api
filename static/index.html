@@ -140,7 +140,6 @@
         fetch('http://localhost:8090/fabioard-api/v1/bus/next')
             .then(response => response.json())
             .then(data => {
-                console.log("fetchBusTime => " + data);
                 data.slice(0, 3).map((schedule, index) => {
                     console.log("fetchBusTime => " + schedule.departure_time + " / " + (index+1));
                     updateCountdown(schedule.departure_time, index+1);
@@ -151,28 +150,18 @@
 
     function updateCountdown(departureTime, index) {
         const departureDate = new Date(departureTime);
+        const now = new Date();
+        const timeRemaining = departureDate - now;
         const busTime = document.getElementById("busTime"+index);
-        updateBusSchedule(departureDate, busTime);
-        const interval = setInterval(() => updateBusSchedule(departureDate, busTime), 20000);
-    }
 
-    function updateBusSchedule(departureDate, busTime) {
-            const now = new Date();
-            const timeRemaining = departureDate - now;
-
-            if (timeRemaining <= 0) {
-                clearInterval(interval);
-                busTime.textContent = "Maintenant !";
-            } else {
-                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-                // const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-                if (minutes < 1) {
-                    busTime.textContent = `⚠️ 1'`;
-                } else {
-                    busTime.textContent = `${minutes}'`;
-                }
-            }
+        if (timeRemaining <= 0) {
+            busTime.textContent = "⚠️ 0'";
+        } else {
+            const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+            // const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+            busTime.textContent = `${minutes}'`;
         }
+    }
 
     function updateDateTime() {
         const now = new Date();
