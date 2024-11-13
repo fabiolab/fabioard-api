@@ -23,6 +23,17 @@
             object-fit: cover;
             transform: translate(-50%, -50%);
         }
+        .container {
+            display: flex;
+            align-items: center; /* Aligne verticalement les éléments */
+            font-size: 32px;
+        }
+
+        .image {
+            width: 75px; /* Ajustez la taille de l'image si nécessaire */
+            height: auto; /* Conserve le ratio de l'image */
+            margin-right: 5px; /* Espace entre l'image et le texte */
+        }
         .top-left {
             position: absolute;
             top: 20px;
@@ -39,6 +50,7 @@
             z-index: 1;
             font-size: 48px;
             text-align: center;
+            line-height : 0.7;
         }
         .center {
             position: absolute;
@@ -52,15 +64,14 @@
     </style>
 </head>
 <body>
-<img class="background" id="randomImage" src="index_files/2014-01-17-Rennes-003.jpg" alt="Image de fond">
+<img class="background" id="randomImage" src="" alt="Image de fond">
 
 <div class="top-left" id="infoContainer" style="color: white;">
-    <div><img id="weatherIcon" src="index_files/04d@2x.png" alt="Icône météo" width="100"></div>
-    <div><span id="weatherText"></span></div>
-    <div>
-        <div>🚍 <span id="busTime1"></span> ⏩ <span id="busTime2"></span> ⏩ <span id="busTime3"></span></div>
-        <div id="dateTime"></div>
+    <div class="container"><img class="image" id="weatherIcon" src="" alt="Icône météo"><span
+            id="weatherText"></span>
     </div>
+    <div>🚍 <span id="busTime1"></span> ⏩ <span id="busTime2"></span> ⏩ <span id="busTime3"></span></div>
+<!--    <div id="dateTime"></div>-->
 </div>
 
 <div class="bottom-center">
@@ -118,17 +129,20 @@
             .then(data => {
                 const weatherText = document.getElementById('weatherText');
                 const weatherIcon = document.getElementById('weatherIcon');
-                weatherText.textContent = data.temperature + "°C (" + data.feels_like + "°C)"; // Assurez-vous que l'API renvoie une description
+                weatherText.textContent = data.temperature + "°C"; // Assurez-vous que l'API renvoie une description
                 weatherIcon.src =  "https://openweathermap.org/img/wn/"+data.icon+"@2x.png"; // Assurez-vous que l'API renvoie l'URL de l'icône
             })
             .catch(error => console.error('Erreur:', error));
     }
 
     function fetchBusTime() {
+        console.log("fetchBusTime");
         fetch('http://localhost:8090/fabioard-api/v1/bus/next')
             .then(response => response.json())
             .then(data => {
+                console.log("fetchBusTime => " + data);
                 data.slice(0, 3).map((schedule, index) => {
+                    console.log("fetchBusTime => " + schedule.departure_time + " / " + (index+1));
                     updateCountdown(schedule.departure_time, index+1);
                 });
             })
@@ -138,8 +152,11 @@
     function updateCountdown(departureTime, index) {
         const departureDate = new Date(departureTime);
         const busTime = document.getElementById("busTime"+index);
+        updateBusSchedule(departureDate, busTime);
+        const interval = setInterval(() => updateBusSchedule(departureDate, busTime), 20000);
+    }
 
-        const interval = setInterval(() => {
+    function updateBusSchedule(departureDate, busTime) {
             const now = new Date();
             const timeRemaining = departureDate - now;
 
@@ -155,8 +172,7 @@
                     busTime.textContent = `${minutes}'`;
                 }
             }
-        }, 20000);
-    }
+        }
 
     function updateDateTime() {
         const now = new Date();
@@ -180,13 +196,13 @@
     fetchRandomImage();
     fetchWeather();
     fetchBusTime();
-    updateDateTime();
+<!--    updateDateTime();-->
 
     // Appels récurrents
-    setInterval(fetchRandomImage, 600000);  // Toutes les 10'
+    setInterval(fetchRandomImage, 300000);  // Toutes les 5'
     setInterval(fetchWeather, 600000); // Toutes les 10'
     setInterval(fetchBusTime, 60000); // Toutes les minutes
-    setInterval(updateDateTime, 60000); // Toutes les minutes
+<!--    setInterval(updateDateTime, 60000); // Toutes les minutes-->
 </script>
 
 
