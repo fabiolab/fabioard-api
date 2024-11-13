@@ -2,10 +2,12 @@ import pathlib
 import random
 from venv import logger
 
+import pendulum
 import requests
 from pydantic import BaseModel
 
 from fabioard.config import settings
+from fabioard.domain.business.picture import Picture
 from fabioard.domain.protocol.CloudProviderProtocol import CloudProviderProtocol
 
 
@@ -27,9 +29,17 @@ class PCloudProvider(CloudProviderProtocol):
     def __init__(self):
         self.auth = self._get_access_token()
 
-    def get_random_picture(self) -> str:
+    def get_random_picture(self) -> Picture:
         random_image = self._choose_random_image(settings.pcloud_image_folderid)
-        return self._download_file(random_image.file_id)
+        url = self._download_file(random_image.file_id)
+
+        try:
+            date = pendulum.parse(random_image.name[:10])
+            location = " ".join(random_image.name.split("-")[3:-1])
+        except ValueError:
+            date = pendulum.now()
+            location = "Unknown"
+        return Picture(url=url, date=date, location=location)
 
     @staticmethod
     def _get_access_token():

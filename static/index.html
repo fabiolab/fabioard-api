@@ -1,13 +1,18 @@
 <!DOCTYPE html>
-<html lang="fr"><head>
-<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+<html lang="fr">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/x-icon" href="favicon.ico">
     <title>Fabioard</title>
     <style>
         body {
             margin: 0;
             overflow: hidden; /* Empêche le défilement */
+            // font-family: 'Century Gothic', 'CenturyGothic', 'AppleGothic', sans-serif;
+            Font-family: Candara, Calibri, Segoe, Segoe UI, Optima, Arial, sans-serif;
+            font-size: 22px;
         }
         img.background {
             position: absolute;
@@ -32,6 +37,8 @@
             transform: translateX(-50%);
             color: white;
             z-index: 1;
+            font-size: 48px;
+            text-align: center;
         }
         .center {
             position: absolute;
@@ -45,118 +52,143 @@
     </style>
 </head>
 <body>
-    <img class="background" id="randomImage" src="index_files/2014-01-17-Rennes-003.jpg" alt="Image de fond">
-    
-    <div class="top-left" id="infoContainer" style="color: white;">
-        <img id="weatherIcon" src="index_files/04d@2x.png" alt="Icône météo" width="50">
-        <span id="weatherText">couvert - 14.84°</span>
-        <div>Prochain bus : <span id="busTime"></span></div>
-        <div id="dateTime">11/11/2024, 12:50:46 PM</div>
+<img class="background" id="randomImage" src="index_files/2014-01-17-Rennes-003.jpg" alt="Image de fond">
+
+<div class="top-left" id="infoContainer" style="color: white;">
+    <div><img id="weatherIcon" src="index_files/04d@2x.png" alt="Icône météo" width="100"></div>
+    <div><span id="weatherText"></span></div>
+    <div>
+        <div>🚍 <span id="busTime1"></span> ⏩ <span id="busTime2"></span> ⏩ <span id="busTime3"></span></div>
+        <div id="dateTime"></div>
     </div>
+</div>
 
-    <script>
-        function analyzeImage(img) {
-            const canvas = document.createElement('canvas');
-            const ctx = canvas.getContext('2d');
-            canvas.width = img.width;img
-            canvas.height = img.height;
-            ctx.drawImage(img, 0, 0, img.width, img.height);
-            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            const data = imageData.data;
+<div class="bottom-center">
+    <span id="pictureLocation"></span><br/><span id="pictureDate" style="font-size: 24px;"></span></br>
+</div>
 
-            let r = 0, g = 0, b = 0;
-            const pixelCount = data.length / 4;
 
-            for (let i = 0; i < data.length; i += 4) {
-                r += data[i];     // Red
-                g += data[i + 1]; // Green
-                b += data[i + 2]; // Blue
-            }
+<script>
+    function analyzeImage(img) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = img.width;img
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0, img.width, img.height);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
 
-            r = Math.floor(r / pixelCount);
-            g = Math.floor(g / pixelCount);
-            b = Math.floor(b / pixelCount);
+        let r = 0, g = 0, b = 0;
+        const pixelCount = data.length / 4;
 
-            const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
-            const textColor = brightness > 128 ? 'black' : 'white';
-            document.getElementById('infoContainer').style.color = textColor;
+        for (let i = 0; i < data.length; i += 4) {
+            r += data[i];     // Red
+            g += data[i + 1]; // Green
+            b += data[i + 2]; // Blue
         }
 
-        function fetchRandomImage() {
-            fetch('http://localhost:8090/fabioard-api/v1/pictures/random')
-                .then(response => response.json())
-                .then(data => {
-                    const imgElement = document.getElementById('randomImage');
-                    imgElement.src = data; // Assurez-vous que l'API renvoie un objet avec une propriété 'url'
-                    imgElement.onload = () => analyzeImage(imgElement);
-                })
-                .catch(error => console.error('Erreur:', error));
-        }
+        r = Math.floor(r / pixelCount);
+        g = Math.floor(g / pixelCount);
+        b = Math.floor(b / pixelCount);
 
-        function fetchWeather() {
-            fetch('http://localhost:8090/fabioard-api/v1/weather')
-                .then(response => response.json())
-                .then(data => {
-                    const weatherText = document.getElementById('weatherText');
-                    const weatherIcon = document.getElementById('weatherIcon');
-                    weatherText.textContent = data.temperature + "°C (" + data.feels_like + "°C)"; // Assurez-vous que l'API renvoie une description
-                    weatherIcon.src =  "https://openweathermap.org/img/wn/"+data.icon+"@2x.png"; // Assurez-vous que l'API renvoie l'URL de l'icône
-                })
-                .catch(error => console.error('Erreur:', error));
-        }
+        const brightness = (0.299 * r + 0.587 * g + 0.114 * b);
+        const textColor = brightness > 128 ? 'black' : 'white';
+        document.getElementById('infoContainer').style.color = textColor;
+    }
 
-        function fetchBusTime() {
-            fetch('http://localhost:8090/fabioard-api/v1/bus/next')
-                .then(response => response.json())
-                .then(data => {
-                    const busTime = document.getElementById('busTime');
-                    updateCountdown(data[0].departure_time);
-                    // busTime.textContent = `Prochain bus à ${data[0].departure_time}`; // Assurez-vous que l'API renvoie l'heure
-                })
-                .catch(error => console.error('Erreur:', error));
-        }
+    function fetchRandomImage() {
+        fetch('http://localhost:8090/fabioard-api/v1/pictures/random')
+            .then(response => response.json())
+            .then(data => {
+                const imgElement = document.getElementById('randomImage');
+                imgElement.src = data.url; // Assurez-vous que l'API renvoie un objet avec une propriété 'url'
+                imgElement.onload = () => analyzeImage(imgElement);
 
-        function updateCountdown(departureTime) {
-            const departureDate = new Date(departureTime);
-            const countdownElement = document.getElementById('busTime');
+                const pictureDate = document.getElementById('pictureDate');
+                const pictureLocation = document.getElementById('pictureLocation');
+                pictureDate.textContent = formatDate(new Date(data.date)); // Assurez-vous que l'API renvoie une date
+                pictureLocation.textContent = data.location; // Assurez-vous que l'API renvoie un lieu
+            })
+            .catch(error => console.error('Erreur:', error));
+    }
 
-            const interval = setInterval(() => {
-                const now = new Date();
-                const timeRemaining = departureDate - now;
+    function fetchWeather() {
+        fetch('http://localhost:8090/fabioard-api/v1/weather')
+            .then(response => response.json())
+            .then(data => {
+                const weatherText = document.getElementById('weatherText');
+                const weatherIcon = document.getElementById('weatherIcon');
+                weatherText.textContent = data.temperature + "°C (" + data.feels_like + "°C)"; // Assurez-vous que l'API renvoie une description
+                weatherIcon.src =  "https://openweathermap.org/img/wn/"+data.icon+"@2x.png"; // Assurez-vous que l'API renvoie l'URL de l'icône
+            })
+            .catch(error => console.error('Erreur:', error));
+    }
 
-                if (timeRemaining <= 0) {
-                    clearInterval(interval);
-                    busTime.textContent = "sur le départ !!";
-                } else {
-                    const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
-                    // const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-                    if (minutes < 1) {
-                        busTime.textContent = `moins de 1'`;
-                    } else {
-                        busTime.textContent = `${minutes}'`;
-                    }
-                }
-            }, 1000);
-        }
+    function fetchBusTime() {
+        fetch('http://localhost:8090/fabioard-api/v1/bus/next')
+            .then(response => response.json())
+            .then(data => {
+                data.slice(0, 3).map((schedule, index) => {
+                    updateCountdown(schedule.departure_time, index+1);
+                });
+            })
+            .catch(error => console.error('Erreur:', error));
+    }
 
-        function updateDateTime() {
+    function updateCountdown(departureTime, index) {
+        const departureDate = new Date(departureTime);
+        const busTime = document.getElementById("busTime"+index);
+
+        const interval = setInterval(() => {
             const now = new Date();
-            const dateTimeElement = document.getElementById('dateTime');
-            dateTimeElement.textContent = now.toLocaleString(); // Format de date et heure local
-        }
+            const timeRemaining = departureDate - now;
 
-        // Appels initiaux
-        fetchRandomImage();
-        fetchWeather();
-        fetchBusTime();
-        updateDateTime();
+            if (timeRemaining <= 0) {
+                clearInterval(interval);
+                busTime.textContent = "Maintenant !";
+            } else {
+                const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
+                // const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
+                if (minutes < 1) {
+                    busTime.textContent = `⚠️ 1'`;
+                } else {
+                    busTime.textContent = `${minutes}'`;
+                }
+            }
+        }, 20000);
+    }
 
-        // Appels récurrents
-        setInterval(fetchRandomImage, 10000); // Toutes les heures
-        setInterval(fetchWeather, 10000); // Toutes les heures
-        setInterval(fetchBusTime, 10000); // Toutes les minutes
-        setInterval(updateDateTime, 10000); // Toutes les minutes
-    </script>
+    function updateDateTime() {
+        const now = new Date();
+        const dateTimeElement = document.getElementById('dateTime');
+        dateTimeElement.textContent = formatDate(now) + " " + formatTime(now);  // now.toLocaleString(); //Format de date et heure local
+    }
+
+    function formatDate(date) {
+        const options = { day: 'numeric', month: 'long', year: 'numeric' };
+        const formattedDate = date.toLocaleDateString('fr-FR', options);
+        return formattedDate;
+    }
+
+    function formatTime(date) {
+        const hours = String(date.getHours()).padStart(2, '0'); // Ajoute un zéro devant si nécessaire
+        const minutes = String(date.getMinutes()).padStart(2, '0'); // Ajoute un zéro devant si nécessaire
+        return `${hours}h${minutes}`;
+    }
+
+    // Appels initiaux
+    fetchRandomImage();
+    fetchWeather();
+    fetchBusTime();
+    updateDateTime();
+
+    // Appels récurrents
+    setInterval(fetchRandomImage, 600000);  // Toutes les 10'
+    setInterval(fetchWeather, 600000); // Toutes les 10'
+    setInterval(fetchBusTime, 60000); // Toutes les minutes
+    setInterval(updateDateTime, 60000); // Toutes les minutes
+</script>
 
 
-</body></html>
+</body>
+</html>
