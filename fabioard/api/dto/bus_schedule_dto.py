@@ -1,4 +1,3 @@
-from pydantic_extra_types.pendulum_dt import DateTime
 from pydantic import BaseModel
 
 from fabioard.domain.business.bus_schedule import BusSchedule

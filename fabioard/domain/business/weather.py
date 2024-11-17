@@ -1,5 +1,5 @@
 from pydantic import BaseModel
-from pendulum import DateTime
+from pydantic_extra_types.pendulum_dt import DateTime
 
 class Weather(BaseModel):
     description: str
@@ -9,3 +9,4 @@ class Weather(BaseModel):
     wind_speed: float
     sunrise: int
     sunset: int
+    date: DateTime

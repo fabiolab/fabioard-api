@@ -11,6 +11,7 @@ class WeatherDto(BaseModel):
     wind_speed: float
     sunrise: int
     sunset: int
+    date: str
 
     @staticmethod
     def from_business(weather: Weather) -> "WeatherDto":
@@ -21,5 +22,6 @@ class WeatherDto(BaseModel):
             feels_like=weather.feels_like,
             wind_speed=weather.wind_speed,
             sunrise=weather.sunrise,
-            sunset=weather.sunset
+            sunset=weather.sunset,
+            date=weather.date.to_datetime_string()
         )

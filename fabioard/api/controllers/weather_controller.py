@@ -15,3 +15,10 @@ async def get_weather() -> WeatherDto:
     logger.info("Weather requested")
 
     return WeatherDto.from_business(weather_service.get_weather("Rennes"))
+
+
+@router.get("/forecast", response_model=list[WeatherDto])
+async def get_forecast() -> list[WeatherDto]:
+    logger.info("Weather forecast requested")
+
+    return [WeatherDto.from_business(weather) for weather in weather_service.get_forecast("Rennes")]

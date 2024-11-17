@@ -8,3 +8,6 @@ class WeatherService:
 
     def get_weather(self, city: str) -> Weather:
         return self.weather_provider.get_weather(city)
+
+    def get_forecast(self, city: str) -> list[Weather]:
+        return self.weather_provider.get_weather_forecast(city)
