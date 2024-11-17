@@ -7,7 +7,7 @@ from loguru import logger
 
 from fabioard.commons.file_utils import get_files
 from fabioard.domain.business.picture import Picture
-from fabioard.domain.protocol.CloudProviderProtocol import CloudProviderProtocol
+from fabioard.domain.protocol.cloud_provider_protocol import CloudProviderProtocol
 
 IMAGES_EXTENSIONS = ['.jpg', '.jpeg', '.png']
 

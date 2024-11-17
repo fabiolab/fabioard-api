@@ -70,7 +70,12 @@
     <div class="container"><img class="image" id="weatherIcon" src="" alt="Icône météo"><span
             id="weatherText"></span>
     </div>
+<!--    <div class="container">-->
+<!--        <img class="image" id="forecastIcon6hours" src="" alt="Icône météo"><span id="forecastText6hours"></span>-->
+<!--        <img class="image" id="forecastIconTomorrow" src="" alt="Icône météo"><span id="forecastTextTomorrow"></span>-->
+<!--    </div>-->
     <div>🚍 <span id="busTime1"></span> ⏩ <span id="busTime2"></span> ⏩ <span id="busTime3"></span></div>
+    <div><span id="events"></span></div>
 <!--    <div id="dateTime"></div>-->
 </div>
 
@@ -148,6 +153,19 @@
             .catch(error => console.error('Erreur:', error));
     }
 
+    function fetchEvents() {
+        console.log("fetchEvents");
+        fetch('http://localhost:8090/fabioard-api/v1/events')
+            .then(response => response.json())
+            .then(data => {
+                data.slice(0, 1).map((event) => {
+                   const events = document.getElementById("events");
+                   events.textContent = event.summary;
+                });
+            })
+            .catch(error => console.error('Erreur:', error));
+    }
+
     function updateCountdown(departureTime, index) {
         const departureDate = new Date(departureTime);
         const now = new Date();
@@ -190,9 +208,11 @@
     fetchRandomImage();
     fetchWeather();
     fetchBusTime();
+    fetchEvents();
 <!--    updateDateTime();-->
 
     // Appels récurrents
+    setInterval(fetchEvents, 300000);  // Toutes les 5'
     setInterval(fetchRandomImage, 60000);  // Toutes les 5'
     setInterval(fetchWeather, 600000); // Toutes les 10'
     setInterval(fetchBusTime, 60000); // Toutes les minutes

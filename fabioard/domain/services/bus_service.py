@@ -1,4 +1,4 @@
-from fabioard.domain.protocol.BusScheduleProviderProtocol import BusProviderProtocol
+from fabioard.domain.protocol.bus_schedule_provider_protocol import BusProviderProtocol
 
 
 class BusService:

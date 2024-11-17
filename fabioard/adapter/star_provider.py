@@ -2,7 +2,7 @@ import pendulum
 import requests
 
 from fabioard.domain.business.bus_schedule import BusSchedule
-from fabioard.domain.protocol.BusScheduleProviderProtocol import BusProviderProtocol
+from fabioard.domain.protocol.bus_schedule_provider_protocol import BusProviderProtocol
 
 
 class StarProvider(BusProviderProtocol):

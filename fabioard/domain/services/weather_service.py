@@ -1,5 +1,5 @@
 from fabioard.domain.business.weather import Weather
-from fabioard.domain.protocol.WeatherProviderProtocol import WeatherProviderProtocol
+from fabioard.domain.protocol.weather_provider_protocol import WeatherProviderProtocol
 
 
 class WeatherService:

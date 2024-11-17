@@ -6,7 +6,7 @@ from pydantic import BaseModel
 
 from fabioard.config import settings
 from fabioard.domain.business.picture import Picture
-from fabioard.domain.protocol.CloudProviderProtocol import CloudProviderProtocol
+from fabioard.domain.protocol.cloud_provider_protocol import CloudProviderProtocol
 
 
 class FileDto(BaseModel):
