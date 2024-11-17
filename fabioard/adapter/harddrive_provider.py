@@ -3,6 +3,7 @@ import shutil
 from pathlib import Path
 
 import pendulum
+from loguru import logger
 
 from fabioard.commons.file_utils import get_files
 from fabioard.domain.business.picture import Picture
@@ -20,7 +21,7 @@ class HardDriveProvider(CloudProviderProtocol):
 
     def get_random_picture(self) -> Picture:
         pic: Path = random.choice(self.images)
-
+        logger.info(f"Picked picture: {str(pic)}")
         try:
             date = pendulum.parse(pic.name[:10])
             location = " ".join(pic.name.split("-")[3:-1])
@@ -28,6 +29,6 @@ class HardDriveProvider(CloudProviderProtocol):
             date = pendulum.now()
             location = "Unknown"
 
-        shutil.copy(pic, "static/background.jpg")
+        shutil.copy(pic, f"static/background.jpg")
 
         return Picture(url="background.jpg", date=date, location=location)

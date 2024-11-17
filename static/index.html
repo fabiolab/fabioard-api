@@ -112,11 +112,8 @@
             .then(response => response.json())
             .then(data => {
                 const imgElement = document.getElementById('randomImage');
-                imgElement.src = data.url; // Assurez-vous que l'API renvoie un objet avec une propriété 'url'
-                imgElement.onload = () => {
-                    imgElement.src = imgElement.src;  // Force le rechargement de l'image pour éviter le cache
-                    analyzeImage(imgElement);
-                };
+                imgElement.src = `${data.url}?t=${new Date().getTime()}`; // Add a fake t param to force image reload
+                imgElement.onload = () => analyzeImage(imgElement);
 
                 const pictureDate = document.getElementById('pictureDate');
                 const pictureLocation = document.getElementById('pictureLocation');
@@ -144,7 +141,7 @@
             .then(response => response.json())
             .then(data => {
                 data.slice(0, 3).map((schedule, index) => {
-                    console.log("fetchBusTime => " + schedule.departure_time + " / " + (index+1));
+<!--                    console.log("fetchBusTime => " + schedule.departure_time + " / " + (index+1));-->
                     updateCountdown(schedule.departure_time, index+1);
                 });
             })
@@ -160,9 +157,14 @@
         if (timeRemaining <= 0) {
             busTime.textContent = "⚠️ 0'";
         } else {
+            const hours = Math.floor((timeRemaining % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             const minutes = Math.floor((timeRemaining % (1000 * 60 * 60)) / (1000 * 60));
             // const seconds = Math.floor((timeRemaining % (1000 * 60)) / 1000);
-            busTime.textContent = `${minutes}'`;
+            if (hours > 0) {
+                busTime.textContent = `${minutes + hours * 60}'`;
+            } else {
+                busTime.textContent = `${minutes}'`;
+            }
         }
     }
 
