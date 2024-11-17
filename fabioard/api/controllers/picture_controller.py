@@ -1,13 +1,13 @@
 from fastapi import APIRouter
 from loguru import logger
 
-from fabioard.adapter.pcloud_provider import PCloudProvider
+from fabioard.adapter.harddrive_provider import HardDriveProvider
 from fabioard.api.dto.picture_dto import PictureDto
 from fabioard.domain.services.picture_service import PictureService
 
 router = APIRouter()
 
-picture_service = PictureService(PCloudProvider())
+picture_service = PictureService(HardDriveProvider(path="/media/kvjw3322/2078B0CD25633F53/Backup/Photos"))
 
 
 @router.get("/pictures/random", response_model=PictureDto)

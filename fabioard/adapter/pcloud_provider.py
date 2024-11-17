@@ -1,6 +1,4 @@
-import pathlib
 import random
-from venv import logger
 
 import pendulum
 import requests
@@ -89,7 +87,6 @@ class PCloudProvider(CloudProviderProtocol):
                 return random.choice(files.files)
             else:
                 next_folder = random.choice(files.folders)
-                print(f"Chosen folder: {next_folder.name} from {files.folders}")
                 return self._choose_random_image(next_folder.file_id)
 
     def _download_file(self, file_id) -> str:
@@ -110,27 +107,4 @@ class PCloudProvider(CloudProviderProtocol):
         data = response.json()
         download_url = f"https://{data['hosts'][0]}{data['path']}"
 
-        if data["result"] == 0:
-            file_response = requests.get(download_url)
-            filename = f"static/{self._get_filename(data['path'])}"
-            logger.info(f"Downloading {file_id} from {download_url} to {filename}")
-            self._clear_pictures()
-            with open(filename, "wb") as file:
-                file.write(file_response.content)
-        else:
-            raise Exception(f"Error while downloading {file_id} from {download_url}: {data['error']}")
-
-        return f"http://localhost:{settings.api_port}/{filename}"
-        # return download_url
-
-    def _get_filename(self, path: str):
-        path = pathlib.Path(path)
-        return path.name
-
-    def _clear_pictures(self):
-        dir = pathlib.Path("static")
-        extensions_images = {'.jpg', '.jpeg', '.png', '.gif', '.bmp', '.tiff'}
-        for file in dir.iterdir():
-            if file.is_file() and file.suffix.lower() in extensions_images:
-                logger.info("Deleting file: {file}")
-                file.unlink()
+        return download_url
