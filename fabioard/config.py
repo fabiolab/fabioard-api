@@ -10,6 +10,8 @@ class Settings(BaseSettings):
     pcloud_password: str
     pcloud_image_folderid: int = 13212918957
 
+    hardrive_path: str
+
     openweathermap_api_key: str
 
 
