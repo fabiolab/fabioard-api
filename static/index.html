@@ -113,7 +113,10 @@
             .then(data => {
                 const imgElement = document.getElementById('randomImage');
                 imgElement.src = data.url; // Assurez-vous que l'API renvoie un objet avec une propriété 'url'
-                imgElement.onload = () => analyzeImage(imgElement);
+                imgElement.onload = () => {
+                    imgElement.src = imgElement.src;  // Force le rechargement de l'image pour éviter le cache
+                    analyzeImage(imgElement);
+                };
 
                 const pictureDate = document.getElementById('pictureDate');
                 const pictureLocation = document.getElementById('pictureLocation');
@@ -188,7 +191,7 @@
 <!--    updateDateTime();-->
 
     // Appels récurrents
-    setInterval(fetchRandomImage, 300000);  // Toutes les 5'
+    setInterval(fetchRandomImage, 60000);  // Toutes les 5'
     setInterval(fetchWeather, 600000); // Toutes les 10'
     setInterval(fetchBusTime, 60000); // Toutes les minutes
 <!--    setInterval(updateDateTime, 60000); // Toutes les minutes-->
