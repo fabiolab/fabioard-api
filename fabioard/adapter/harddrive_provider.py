@@ -22,9 +22,10 @@ class HardDriveProvider(CloudProviderProtocol):
     def get_random_picture(self) -> Picture:
         pic: Path = random.choice(self.images)
         logger.info(f"Picked picture: {str(pic)}")
+
         try:
-            date = pendulum.parse(pic.name[:10])
-            location = " ".join(pic.name.split("-")[3:-1])
+            date = pendulum.parse(pic.parent.name[:10])
+            location = " ".join(pic.parent.name.split("-")[3:])
         except ValueError:
             date = pendulum.now()
             location = "Unknown"
