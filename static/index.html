@@ -75,7 +75,7 @@
 <!--        <img class="image" id="forecastIconTomorrow" src="" alt="Icône météo"><span id="forecastTextTomorrow"></span>-->
 <!--    </div>-->
     <div>🚍 <span id="busTime1"></span> ⏩ <span id="busTime2"></span> ⏩ <span id="busTime3"></span></div>
-    <div><span id="events"></span></div>
+    <div><span id="events"></span> dans <span id="eventsDate"></span></div>
 <!--    <div id="dateTime"></div>-->
 </div>
 
@@ -146,7 +146,6 @@
             .then(response => response.json())
             .then(data => {
                 data.slice(0, 3).map((schedule, index) => {
-<!--                    console.log("fetchBusTime => " + schedule.departure_time + " / " + (index+1));-->
                     updateCountdown(schedule.departure_time, index+1);
                 });
             })
@@ -160,11 +159,31 @@
             .then(data => {
                 data.slice(0, 1).map((event) => {
                    const events = document.getElementById("events");
+                   updateEventCountdown(event.start);
                    events.textContent = event.summary;
                 });
             })
             .catch(error => console.error('Erreur:', error));
     }
+
+    function updateEventCountdown(eventDateStr) {
+        const eventDate = new Date(eventDateStr);
+        const countdownElement = document.getElementById('eventsDate');
+
+        const interval = setInterval(() => {
+            const now = new Date();
+            const timeRemaining = eventDate - now;
+
+            if (timeRemaining <= 0) {
+                clearInterval(interval);
+                countdownElement.textContent = "C'est aujourd'hui !";
+            } else {
+                const jours = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+                countdownElement.textContent = ` ${jours} jours`;
+            }
+        }, 360000);  // Refresh every hour
+    }
+
 
     function updateCountdown(departureTime, index) {
         const departureDate = new Date(departureTime);
