@@ -75,7 +75,7 @@
 <!--        <img class="image" id="forecastIconTomorrow" src="" alt="Icône météo"><span id="forecastTextTomorrow"></span>-->
 <!--    </div>-->
     <div>🚍 <span id="busTime1"></span> ⏩ <span id="busTime2"></span> ⏩ <span id="busTime3"></span></div>
-    <div><span id="events"></span> dans <span id="eventsDate"></span></div>
+    <div id="events"></div>
 <!--    <div id="dateTime"></div>-->
 </div>
 
@@ -154,34 +154,36 @@
 
     function fetchEvents() {
         console.log("fetchEvents");
+        const events = document.getElementById("events");
+        events.innerHTML = '';
         fetch('http://localhost:8090/fabioard-api/v1/events')
             .then(response => response.json())
             .then(data => {
-                data.slice(0, 1).map((event) => {
-                   const events = document.getElementById("events");
-                   updateEventCountdown(event.start);
-                   events.textContent = event.summary;
+                data.slice(0, 3).map((event) => {
+                    const span = document.createElement('span');
+                    const br = document.createElement('br');
+                    span.textContent = event.summary + " dans " + getCountdownevent(event.start);
+                    events.appendChild(span);
+                    events.appendChild(br);
                 });
             })
             .catch(error => console.error('Erreur:', error));
     }
 
-    function updateEventCountdown(eventDateStr) {
+    function getCountdownevent(eventDateStr) {
         const eventDate = new Date(eventDateStr);
         const countdownElement = document.getElementById('eventsDate');
 
-        const interval = setInterval(() => {
-            const now = new Date();
-            const timeRemaining = eventDate - now;
+        const now = new Date();
+        const timeRemaining = eventDate - now;
 
-            if (timeRemaining <= 0) {
-                clearInterval(interval);
-                countdownElement.textContent = "C'est aujourd'hui !";
-            } else {
-                const jours = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
-                countdownElement.textContent = ` ${jours} jours`;
-            }
-        }, 360000);  // Refresh every hour
+        if (timeRemaining <= 0) {
+            clearInterval(interval);
+            return "C'est aujourd'hui !";
+        } else {
+            const jours = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+            return ` ${jours} jours`;
+        }
     }
 
 
