@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fabioard Remote Control</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+        button {
+            font-size: 100px;
+            padding: 20px 40px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <button id="nextButton">⏭️</button>
+
+    <script>
+        document.getElementById('nextButton').addEventListener('click', function() {
+            fetch('http://localhost:8090/fabioard-api/v1/slideshow/next', {
+                method: 'POST'
+            })
+            .then(response => console.log('Appel API réussi'))
+            .catch(error => console.error('Erreur lors de l\'appel API:', error));
+        });
+    </script>
+</body>
+</html>
