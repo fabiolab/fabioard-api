@@ -1,9 +1,14 @@
 var ws = new WebSocket("ws://localhost:8090/fabioard-api/v1/ws");
 
 ws.onmessage = function(event) {
-    if (event.data === 'next') {
-        console.log(event.data);
+    msg = JSON.parse(event.data);
+    if (msg.label === 'next') {
+        console.log(msg.label);
         fetchRandomImage();
+    }
+    if (msg.label === 'previous') {
+        console.log(msg);
+        displayImage(msg.data);
     }
 }
 
@@ -34,18 +39,22 @@ function analyzeImage(img) {
     document.getElementById('infoContainer').style.color = textColor;
 }
 
+function displayImage(pic) {
+    const imgElement = document.getElementById('randomImage');
+    imgElement.src = `${pic.url}?t=${new Date().getTime()}`; // Add a fake t param to force image reload
+    imgElement.onload = () => analyzeImage(imgElement);
+
+    const pictureDate = document.getElementById('pictureDate');
+    const pictureLocation = document.getElementById('pictureLocation');
+    pictureDate.textContent = formatDate(new Date(pic.date)); // Assurez-vous que l'API renvoie une date
+    pictureLocation.textContent = pic.location; // Assurez-vous que l'API renvoie un lieu
+}
+
 function fetchRandomImage() {
     fetch('http://localhost:8090/fabioard-api/v1/pictures/random')
         .then(response => response.json())
         .then(data => {
-            const imgElement = document.getElementById('randomImage');
-            imgElement.src = `${data.url}?t=${new Date().getTime()}`; // Add a fake t param to force image reload
-            imgElement.onload = () => analyzeImage(imgElement);
-
-            const pictureDate = document.getElementById('pictureDate');
-            const pictureLocation = document.getElementById('pictureLocation');
-            pictureDate.textContent = formatDate(new Date(data.date)); // Assurez-vous que l'API renvoie une date
-            pictureLocation.textContent = data.location; // Assurez-vous que l'API renvoie un lieu
+            displayImage(data);
         })
         .catch(error => console.error('Erreur:', error));
 }

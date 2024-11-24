@@ -1,15 +1,20 @@
 from fastapi import APIRouter
 
-from fabioard.adapter.harddrive_provider import HardDriveProvider
+from fabioard.api.dto.message import Message
 from fabioard.api.websocket.websocket_manager import manager
-from fabioard.config import settings
-from fabioard.domain.services.picture_service import PictureService
+from fabioard.domain.service_handler import ServiceHandler
 
 router = APIRouter()
-
-picture_service = PictureService(HardDriveProvider(path=settings.hardrive_path))
 
 
 @router.post("/slideshow/next")
 async def post_next_slideshow():
-    await manager.broadcast("next")
+    message = Message(label="next", data={})
+    await manager.broadcast(message)
+
+
+@router.post("/slideshow/previous")
+async def post_previous_slideshow():
+    picture = ServiceHandler.picture_service().get_previous_picture()
+    message = Message(label="previous", data=picture.model_dump(mode="json"))
+    await manager.broadcast(message)

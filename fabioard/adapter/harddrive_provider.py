@@ -5,11 +5,9 @@ from pathlib import Path
 import pendulum
 from loguru import logger
 
-from fabioard.commons.file_utils import get_files
+from fabioard.commons.file_utils import get_images, keep_latest_images
 from fabioard.domain.business.picture import Picture
 from fabioard.domain.protocol.cloud_provider_protocol import CloudProviderProtocol
-
-IMAGES_EXTENSIONS = ['.jpg', '.jpeg', '.png']
 
 
 class HardDriveProvider(CloudProviderProtocol):
@@ -17,7 +15,8 @@ class HardDriveProvider(CloudProviderProtocol):
     def __init__(self, path: str):
         self.path = Path(path)
         # For big folders, this could use a lot of memory
-        self.images = sum([get_files(self.path, extension=ext) for ext in IMAGES_EXTENSIONS], [])  # Flat the list
+        self.images = get_images(self.path)
+        logger.info(f"Found {len(self.images)} images in {str(self.path)}")
 
     def get_random_picture(self) -> Picture:
         pic: Path = random.choice(self.images)
@@ -30,6 +29,8 @@ class HardDriveProvider(CloudProviderProtocol):
             date = pendulum.now()
             location = "Unknown"
 
-        shutil.copy(pic, f"static/background.jpg")
+        # os.symlink(pic.absolute(), f"static/{pic.name}")
+        shutil.copy(pic, f"static/{pic.name}")
+        keep_latest_images(Path(f"static"), num_to_keep=10)
 
-        return Picture(url="background.jpg", date=date, location=location)
+        return Picture(url=pic.name, date=date, location=location)
