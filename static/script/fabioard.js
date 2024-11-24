@@ -112,7 +112,7 @@ function getCountdownevent(eventDateStr) {
         clearInterval(interval);
         return "C'est aujourd'hui !";
     } else {
-        const jours = Math.floor(timeRemaining / (1000 * 60 * 60 * 24));
+        const jours = Math.ceil(timeRemaining / (1000 * 60 * 60 * 24));
         return ` ${jours} jours`;
     }
 }
