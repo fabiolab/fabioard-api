@@ -1,5 +1,9 @@
 import datetime
 import os
+from os import unlink
+
+from google.auth.exceptions import RefreshError
+from loguru import logger
 
 import pendulum
 from google.auth.transport.requests import Request
@@ -44,7 +48,15 @@ class GoogleCalendarProvider(CalendarProviderProtocol):
         # if no valid credentials are available, let the user log in
         if not creds or not creds.valid:
             if creds and creds.expired and creds.refresh_token:
-                creds.refresh(Request())
+                try:
+                    creds.refresh(Request())
+                except RefreshError as e:
+                    logger.error(f"Error refreshing token: {e}")
+                    logger.info(f"Delete {TOKEN_FILE} to force a new login")
+                    unlink(TOKEN_FILE)
+
+                    flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, SCOPES)
+                    creds = flow.run_local_server(port=0)
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(CREDENTIALS_FILE, SCOPES)
                 creds = flow.run_local_server(port=0)

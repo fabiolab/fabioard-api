@@ -3,6 +3,7 @@ from starlette.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from fabioard.api.controllers.websocket_controller import websocket_endpoint
+from fabioard.commons.file_utils import generate_qrcode, get_ip_address
 from fabioard.config import settings
 from fabioard.api.controllers import (
     status_controller,
@@ -63,6 +64,9 @@ app.add_middleware(
 
 if __name__ == "__main__":
     import uvicorn
+
+    # Generate the remote control qrcode at startup (use the IP of the machine running the API)
+    generate_qrcode(f"http://{get_ip_address()}:{settings.api_port}/static/remote.html", "static/remote_qrcode.png")
 
     logger.info(f"Starting Fabioard API on port {settings.api_port}")
     uvicorn.run("main:app", host="0.0.0.0", port=settings.api_port)

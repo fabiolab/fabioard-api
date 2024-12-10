@@ -29,8 +29,8 @@ class HardDriveProvider(CloudProviderProtocol):
             date = pendulum.now()
             location = "Unknown"
 
-        # os.symlink(pic.absolute(), f"static/{pic.name}")
-        shutil.copy(pic, f"static/{pic.name}")
-        keep_latest_images(Path(f"static"), num_to_keep=10)
+        # os.symlink(pic.absolute(), f"static/images/{pic.name}")
+        shutil.copy(pic, f"static/images/{pic.name}")
+        keep_latest_images(Path("static/images"), num_to_keep=10)
 
-        return Picture(url=pic.name, date=date, location=location)
+        return Picture(url=f"images/{pic.name}", date=date, location=location)

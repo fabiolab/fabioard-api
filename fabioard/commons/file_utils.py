@@ -1,6 +1,10 @@
+import socket
 import os
 from pathlib import Path
 from loguru import logger
+from qrcode.constants import ERROR_CORRECT_L
+from qrcode.main import QRCode
+from PIL import Image
 
 IMAGES_EXTENSIONS = ['.jpg', '.jpeg', '.png']
 
@@ -24,3 +28,26 @@ def keep_latest_images(directory: Path, num_to_keep: int = 10):
     for image in images[num_to_keep:]:
         logger.info(f"Removing {image}")
         image.unlink()
+
+
+def generate_qrcode(url: str, out_file: str):
+    qr = QRCode(
+        version=1,
+        error_correction=ERROR_CORRECT_L,
+        box_size=10,
+        border=4,
+    )
+    qr.add_data(url)
+    qr.make(fit=True)
+    img = qr.make_image(fill_color="black", back_color="white", )
+    desired_size = (100, 100)
+    img = img.resize(desired_size, Image.LANCZOS)
+    img.save(out_file)
+
+
+def get_ip_address() -> str:
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.connect(("8.8.8.8", 80))
+    ip_address = s.getsockname()[0]
+    s.close()
+    return ip_address

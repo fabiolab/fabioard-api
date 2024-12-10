@@ -32,6 +32,13 @@ img.background {
     color: white;
     z-index: 1;
 }
+.bottom-left {
+    position: absolute;
+    bottom: 20px;
+    left: 20px;
+    color: white;
+    z-index: 0;
+}
 .bottom-center {
     position: absolute;
     bottom: 20px;

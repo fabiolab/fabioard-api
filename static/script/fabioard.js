@@ -161,11 +161,11 @@ fetchRandomImage();
 fetchWeather();
 fetchBusTime();
 fetchEvents();
-<!--    updateDateTime();-->
+// updateDateTime();
 
 // Appels récurrents
 setInterval(fetchRandomImage, 60000);  // Toutes les 5'
 setInterval(fetchWeather, 600000); // Toutes les 10'
 setInterval(fetchBusTime, 60000); // Toutes les minutes
 setInterval(fetchEvents, 300000);  // Toutes les 5'
-<!--    setInterval(updateDateTime, 60000); // Toutes les minutes-->
+// setInterval(updateDateTime, 60000); // Toutes les minutes
