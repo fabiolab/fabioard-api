@@ -26,14 +26,14 @@
 
     <script>
         document.getElementById('nextButton').addEventListener('click', function() {
-            fetch('http://localhost:8090/fabioard-api/v1/slideshow/next', {
+            fetch('/fabioard-api/v1/slideshow/next', {
                 method: 'POST'
             })
             .then(response => console.log('Appel API réussi'))
             .catch(error => console.error('Erreur lors de l\'appel API:', error));
         });
         document.getElementById('previousButton').addEventListener('click', function() {
-            fetch('http://localhost:8090/fabioard-api/v1/slideshow/previous', {
+            fetch('/fabioard-api/v1/slideshow/previous', {
                 method: 'POST'
             })
             .then(response => console.log('Appel API réussi'))
