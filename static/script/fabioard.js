@@ -46,8 +46,8 @@ function displayImage(pic) {
 
     const pictureDate = document.getElementById('pictureDate');
     const pictureLocation = document.getElementById('pictureLocation');
-    pictureDate.textContent = formatDate(new Date(pic.date)); // Assurez-vous que l'API renvoie une date
-    pictureLocation.textContent = pic.location; // Assurez-vous que l'API renvoie un lieu
+    pictureDate.textContent = formatDate(new Date(pic.date));
+    pictureLocation.textContent = pic.location;
 }
 
 function fetchRandomImage() {
@@ -65,8 +65,23 @@ function fetchWeather() {
         .then(data => {
             const weatherText = document.getElementById('weatherText');
             const weatherIcon = document.getElementById('weatherIcon');
-            weatherText.textContent = data.temperature + "°C"; // Assurez-vous que l'API renvoie une description
-            weatherIcon.src =  "https://openweathermap.org/img/wn/"+data.icon+"@2x.png"; // Assurez-vous que l'API renvoie l'URL de l'icône
+            weatherText.textContent = data.temperature + "/" + data.feels_like + "°C";
+            weatherIcon.src =  "https://openweathermap.org/img/wn/"+data.icon+"@2x.png";
+        })
+        .catch(error => console.error('Erreur:', error));
+
+    fetch('http://localhost:8090/fabioard-api/v1/forecast')
+        .then(response => response.json())
+        .then(data => {
+            const forecastText1 = document.getElementById('forecastText1');
+            const forecastIcon1 = document.getElementById('forecastIcon1');
+            forecastText1.textContent = data[2].date.slice(11, 13) + "h :" + data[2].temperature + "/" + data[2].feels_like + "°C";
+            forecastIcon1.src =  "https://openweathermap.org/img/wn/"+data[2].icon+"@2x.png";
+
+            const forecastText2 = document.getElementById('forecastText2');
+            const forecastIcon2 = document.getElementById('forecastIcon2');
+            forecastText2.textContent = data[5].date.slice(11, 13) + "h :" + data[5].temperature + "/" + data[5].feels_like + "°C";
+            forecastIcon2.src =  "https://openweathermap.org/img/wn/"+data[5].icon+"@2x.png";
         })
         .catch(error => console.error('Erreur:', error));
 }

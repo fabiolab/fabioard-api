@@ -18,12 +18,21 @@ img.background {
     display: flex;
     align-items: center; /* Aligne verticalement les éléments */
     font-size: 32px;
+    margin-bottom: -25px;
 }
-
+.container-forecast {
+    display: flex;
+    align-items: center; /* Aligne verticalement les éléments */
+    font-size: 16px;
+}
 .image {
     width: 75px; /* Ajustez la taille de l'image si nécessaire */
     height: auto; /* Conserve le ratio de l'image */
     margin-right: 5px; /* Espace entre l'image et le texte */
+}
+.image-small {
+    width: 50px; /* Ajustez la taille de l'image si nécessaire */
+    height: auto; /* Conserve le ratio de l'image */
 }
 .top-left {
     position: absolute;
