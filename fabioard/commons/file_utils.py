@@ -40,7 +40,7 @@ def generate_qrcode(url: str, out_file: str):
     qr.add_data(url)
     qr.make(fit=True)
     img = qr.make_image(fill_color="black", back_color="white", )
-    desired_size = (100, 100)
+    desired_size = (75, 75)
     img = img.resize(desired_size, Image.LANCZOS)
     img.save(out_file)
 

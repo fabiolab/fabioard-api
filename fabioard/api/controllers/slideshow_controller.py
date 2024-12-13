@@ -18,3 +18,10 @@ async def post_previous_slideshow():
     picture = ServiceHandler.picture_service().get_previous_picture()
     message = Message(label="previous", data=picture.model_dump(mode="json"))
     await manager.broadcast(message)
+
+
+# @router.post("/slideshow/like")
+# async def post_like():
+#     picture = ServiceHandler.picture_service().like()
+#     message = Message(label="previous", data=picture.model_dump(mode="json"))
+#     await manager.broadcast(message)

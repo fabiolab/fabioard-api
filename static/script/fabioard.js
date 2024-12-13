@@ -12,6 +12,9 @@ ws.onmessage = function(event) {
     }
 }
 
+document.getElementById('fullscreen-button').addEventListener('click', fullScreen);
+
+
 function analyzeImage(img) {
     const canvas = document.createElement('canvas');
     const ctx = canvas.getContext('2d');
@@ -65,7 +68,7 @@ function fetchWeather() {
         .then(data => {
             const weatherText = document.getElementById('weatherText');
             const weatherIcon = document.getElementById('weatherIcon');
-            weatherText.textContent = data.temperature + "/" + data.feels_like + "°C";
+            weatherText.textContent = data.temperature + "°C";
             weatherIcon.src =  "https://openweathermap.org/img/wn/"+data.icon+"@2x.png";
         })
         .catch(error => console.error('Erreur:', error));
@@ -75,12 +78,12 @@ function fetchWeather() {
         .then(data => {
             const forecastText1 = document.getElementById('forecastText1');
             const forecastIcon1 = document.getElementById('forecastIcon1');
-            forecastText1.textContent = data[2].date.slice(11, 13) + "h :" + data[2].temperature + "/" + data[2].feels_like + "°C";
+            forecastText1.textContent = data[2].date.slice(11, 13) + "h : " + data[2].temperature + "°C";
             forecastIcon1.src =  "https://openweathermap.org/img/wn/"+data[2].icon+"@2x.png";
 
             const forecastText2 = document.getElementById('forecastText2');
             const forecastIcon2 = document.getElementById('forecastIcon2');
-            forecastText2.textContent = data[5].date.slice(11, 13) + "h :" + data[5].temperature + "/" + data[5].feels_like + "°C";
+            forecastText2.textContent = data[5].date.slice(11, 13) + "h :" + data[5].temperature + "°C";
             forecastIcon2.src =  "https://openweathermap.org/img/wn/"+data[5].icon+"@2x.png";
         })
         .catch(error => console.error('Erreur:', error));
@@ -169,6 +172,21 @@ function formatTime(date) {
     const hours = String(date.getHours()).padStart(2, '0'); // Ajoute un zéro devant si nécessaire
     const minutes = String(date.getMinutes()).padStart(2, '0'); // Ajoute un zéro devant si nécessaire
     return `${hours}h${minutes}`;
+}
+
+function fullScreen() {
+    const elem = document.documentElement;
+    if (document.fullscreenElement) {
+        document.exitFullscreen();
+    } else {
+        if (elem.requestFullscreen) {
+            elem.requestFullscreen();
+        } else if (elem.webkitRequestFullscreen) { /* Safari */
+            elem.webkitRequestFullscreen();
+        } else if (elem.msRequestFullscreen) { /* IE11 */
+            elem.msRequestFullscreen();
+        }
+    }
 }
 
 // Appels initiaux
