@@ -14,6 +14,27 @@ ws.onmessage = function(event) {
 
 document.getElementById('fullscreen-button').addEventListener('click', fullScreen);
 
+var weatherIconMap = {
+    "01d": "☀️",
+    "01n": "🌙",
+    "02d": "⛅",
+    "02n": "☁️",
+    "03d": "☁️",
+    "03n": "☁️",
+    "04d": "☁️",
+    "04n": "☁️",
+    "09d": "🌧️",
+    "09n": "🌧️",
+    "10d": "🌦️",
+    "10n": "🌧️",
+    "11d": "⛈️",
+    "11n": "⛈️",
+    "13d": "❄️",
+    "13n": "❄️",
+    "50d": "🌫️",
+    "50n": "🌫️"
+  }
+  
 
 function analyzeImage(img) {
     const canvas = document.createElement('canvas');
@@ -67,24 +88,40 @@ function fetchWeather() {
         .then(response => response.json())
         .then(data => {
             const weatherText = document.getElementById('weatherText');
-            const weatherIcon = document.getElementById('weatherIcon');
-            weatherText.textContent = data.temperature + "°C";
-            weatherIcon.src =  "https://openweathermap.org/img/wn/"+data.icon+"@2x.png";
+            weatherText.textContent = weatherIconMap[data.icon] + " " + data.temperature + "°C";
         })
         .catch(error => console.error('Erreur:', error));
 
-    fetch('http://localhost:8090/fabioard-api/v1/forecast')
+    fetch('http://localhost:8090/fabioard-api/v1/forecast/by_day')
         .then(response => response.json())
         .then(data => {
-            const forecastText1 = document.getElementById('forecastText1');
+            const forecastTemp1 = document.getElementById('forecastTemp1');
             const forecastIcon1 = document.getElementById('forecastIcon1');
-            forecastText1.textContent = data[2].date.slice(11, 13) + "h : " + data[2].temperature + "°C";
-            forecastIcon1.src =  "https://openweathermap.org/img/wn/"+data[2].icon+"@2x.png";
+            const forecastDay1 = document.getElementById('forecastDay1');
+            forecastTemp1.textContent = data[0].min.temperature + "° " + data[0].max.temperature + "°";
+            forecastIcon1.textContent = weatherIconMap[data[0].min.icon];
+            forecastDay1.textContent = data[0].day_of_week;
 
-            const forecastText2 = document.getElementById('forecastText2');
+            const forecastTemp2 = document.getElementById('forecastTemp2');
             const forecastIcon2 = document.getElementById('forecastIcon2');
-            forecastText2.textContent = data[5].date.slice(11, 13) + "h :" + data[5].temperature + "°C";
-            forecastIcon2.src =  "https://openweathermap.org/img/wn/"+data[5].icon+"@2x.png";
+            const forecastDay2 = document.getElementById('forecastDay2');
+            forecastTemp2.textContent = data[1].min.temperature + "° " + data[1].max.temperature + "°";
+            forecastIcon2.textContent = weatherIconMap[data[1].min.icon];
+            forecastDay2.textContent = data[1].day_of_week;
+
+            const forecastTemp3 = document.getElementById('forecastTemp3');
+            const forecastIcon3 = document.getElementById('forecastIcon3');
+            const forecastDay3 = document.getElementById('forecastDay3');
+            forecastTemp3.textContent = data[2].min.temperature + "° " + data[2].max.temperature + "°";
+            forecastIcon3.textContent = weatherIconMap[data[2].min.icon];
+            forecastDay3.textContent = data[2].day_of_week;
+
+            const forecastTemp4 = document.getElementById('forecastTemp4');
+            const forecastIcon4 = document.getElementById('forecastIcon4');
+            const forecastDay4 = document.getElementById('forecastDay4');
+            forecastTemp4.textContent = data[3].min.temperature + "° " + data[3].max.temperature + "°";
+            forecastIcon4.textContent = weatherIconMap[data[3].min.icon];
+            forecastDay4.textContent = data[3].day_of_week;
         })
         .catch(error => console.error('Erreur:', error));
 }
@@ -108,10 +145,10 @@ function fetchEvents() {
     fetch('http://localhost:8090/fabioard-api/v1/events')
         .then(response => response.json())
         .then(data => {
-            data.slice(0, 3).map((event) => {
+            data.slice(0, 5).map((event) => {
                 const span = document.createElement('span');
                 const br = document.createElement('br');
-                span.textContent = event.summary + " dans " + getCountdownevent(event.start);
+                span.textContent = event.summary + " - " + getCountdownevent(event.start) + " jours";
                 events.appendChild(span);
                 events.appendChild(br);
             });
@@ -128,10 +165,10 @@ function getCountdownevent(eventDateStr) {
 
     if (timeRemaining <= 0) {
         clearInterval(interval);
-        return "C'est aujourd'hui !";
+        return "aujourd'hui !";
     } else {
         const jours = Math.ceil(timeRemaining / (1000 * 60 * 60 * 24));
-        return ` ${jours} jours`;
+        return `${jours}`;
     }
 }
 
@@ -176,8 +213,10 @@ function formatTime(date) {
 
 function fullScreen() {
     const elem = document.documentElement;
+    const fsIcon = document.getElementById('fullscreen-button');
     if (document.fullscreenElement) {
         document.exitFullscreen();
+        fsIcon.src = "/static/fullscreen.png";
     } else {
         if (elem.requestFullscreen) {
             elem.requestFullscreen();
@@ -186,6 +225,7 @@ function fullScreen() {
         } else if (elem.msRequestFullscreen) { /* IE11 */
             elem.msRequestFullscreen();
         }
+        fsIcon.src = "/static/fullscreen_exit.png";
     }
 }
 

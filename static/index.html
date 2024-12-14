@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <meta charset="UTF-8">
@@ -8,32 +9,60 @@
     <title>Fabioard</title>
     <link rel="stylesheet" href="/static/css/fabioard.css">
 </head>
+
 <body>
-<img class="background" id="randomImage" src="" alt="Image de fond">
+    <img class="background" id="randomImage" src="" alt="Image de fond">
 
-<div class="top-left" id="infoContainer" style="color: white;">
-    <div class="container"><img class="image" id="weatherIcon" src="" alt="Icône météo"><span
-            id="weatherText"></span>
+    <div class="top-left" id="infoContainer" style="color: white;">
+        <div class="component-container">
+            <div class="weather-row">
+                <div class="weather-item">
+                    <span class="weather-data" id="weatherText"></span>
+                </div>
+            </div>
+            <div class="weather-row">
+                <div class="weather-item-vertical">
+                    <span class="forecast-data" class="day" id="forecastDay1"></span>
+                    <span class="forecast-data-icon" id="forecastIcon1"></span>
+                    <span class="forecast-data" id="forecastTemp1"></span>
+                </div>
+                <div class="weather-item-vertical">
+                    <span class="forecast-data" id="forecastDay2"></span>
+                    <span class="forecast-data-icon" id="forecastIcon2"></span>
+                    <span class="forecast-data" id="forecastTemp2"></span>
+                </div>
+                <div class="weather-item-vertical">
+                    <span class="forecast-data" id="forecastDay3"></span>
+                    <span class="forecast-data-icon" id="forecastIcon3"></span>
+                    <span class="forecast-data" id="forecastTemp3"></span>
+                </div>
+                <div class="weather-item-vertical">
+                    <span class="forecast-data" id="forecastDay4"></span>
+                    <span class="forecast-data-icon" id="forecastIcon4"></span>
+                    <span class="forecast-data" id="forecastTemp4"></span>
+                </div>
+            </div>
+        </div>
+        <div class="component-container">
+            <div>🚍 <span id="busTime1"></span> ⏩ <span id="busTime2"></span> ⏩ <span id="busTime3"></span></div>
+        </div>
+        <div class="component-container">
+            <div class="events" id="events"></div>
+        </div>
+        <!--    <div id="dateTime"></div>-->
     </div>
-    <div class="container-forecast">
-        <img class="image-small" id="forecastIcon1" src="" alt="Icône météo"><span id="forecastText1"></span>
-        <img class="image-small" id="forecastIcon2" src="" alt="Icône météo"><span id="forecastText2"></span>
+
+    <div class="bottom-center">
+            <span id="pictureLocation"></span><br /><span id="pictureDate" style="font-size: 24px;"></span></br>
     </div>
-    <div>🚍 <span id="busTime1"></span> ⏩ <span id="busTime2"></span> ⏩ <span id="busTime3"></span></div>
-    <div id="events"></div>
-    <!--    <div id="dateTime"></div>-->
-</div>
 
-<div class="bottom-center">
-    <span id="pictureLocation"></span><br/><span id="pictureDate" style="font-size: 24px;"></span></br>
-</div>
+    <div class="bottom-left">
+            <img src="/static/remote_qrcode.png">
+            <img id="fullscreen-button" src="/static/fullscreen.png">
+    </div>
 
-<div class="bottom-left">
-    <img src="/static/remote_qrcode.png">
-    <img id="fullscreen-button" src="/static/fullscreen.png">
-</div>
-
-<script src="/static/script/fabioard.js"></script>
+    <script src="/static/script/fabioard.js"></script>
 
 </body>
+
 </html>

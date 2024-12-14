@@ -1,4 +1,5 @@
 from fastapi import FastAPI
+import pendulum
 from starlette.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
@@ -15,6 +16,8 @@ from fabioard.api.controllers import (
 from loguru import logger
 
 BASE_PATH = f"{settings.api_base_path}"
+
+pendulum.set_locale('fr')
 
 app = FastAPI(
     title="Fabioard api",

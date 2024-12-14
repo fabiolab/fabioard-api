@@ -1,9 +1,7 @@
 from fastapi import APIRouter
 
-from fabioard.adapter.google_calendar_provider import GoogleCalendarProvider
 from fabioard.api.dto.event_dto import EventDto
 from fabioard.domain.service_handler import ServiceHandler
-from fabioard.domain.services.calendar_service import CalendarService
 
 router = APIRouter()
 

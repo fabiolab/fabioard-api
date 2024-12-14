@@ -1,10 +1,8 @@
 from fastapi import APIRouter
 from loguru import logger
 
-from fabioard.adapter.owm_provider import OpenWeatherMapProvider
-from fabioard.api.dto.weather_dto import WeatherDto
+from fabioard.api.dto.weather_dto import WeatherByDayDto, WeatherDto
 from fabioard.domain.service_handler import ServiceHandler
-from fabioard.domain.services.weather_service import WeatherService
 
 router = APIRouter()
 
@@ -21,3 +19,9 @@ async def get_forecast() -> list[WeatherDto]:
     logger.info("Weather forecast requested")
 
     return [WeatherDto.from_business(weather) for weather in ServiceHandler.weather_service().get_forecast("Rennes")]
+
+@router.get("/forecast/by_day", response_model=list[WeatherByDayDto])
+async def get_forecast_by_day() -> list[WeatherByDayDto]:
+    logger.info("Weather forecast requested")
+
+    return [WeatherByDayDto.from_business(weather) for weather in ServiceHandler.weather_service().get_forecast_by_day("Rennes")]

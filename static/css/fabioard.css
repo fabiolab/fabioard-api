@@ -14,12 +14,7 @@ img.background {
     object-fit: cover;
     transform: translate(-50%, -50%);
 }
-.container {
-    display: flex;
-    align-items: center; /* Aligne verticalement les éléments */
-    font-size: 32px;
-    margin-bottom: -25px;
-}
+
 .container-forecast {
     display: flex;
     align-items: center; /* Aligne verticalement les éléments */
@@ -67,4 +62,49 @@ img.background {
     color: white;
     z-index: 1;
     font-size: 24px;
+}
+
+.component-container {
+    background-color: rgba(0, 0, 0, 0.4);
+    border-radius: 10px;
+    padding: 20px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    align-items: center;
+    margin-bottom: 5pt;
+}
+.weather-row {
+    display: flex;
+    align-items: center;
+}
+.weather-item {
+    display: flex;
+}
+.weather-item-vertical {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 5pt;
+}
+.temperature {
+    font-size: 14px;
+    margin-left: 0px;
+}
+.day {
+    font-size: 14px;
+    color: #666;
+    margin-top: 5px;
+}
+.weather-data {
+    font-size: 36px;
+}
+.forecast-data {
+    font-size: 16px;
+}
+
+.forecast-data-icon {
+    font-size: 24px;
+}
+
+.events {
+    font-size: 16px;
 }

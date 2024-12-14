@@ -1,6 +1,6 @@
 from pydantic import BaseModel
 
-from fabioard.domain.business.weather import Weather
+from fabioard.domain.business.weather import Weather, WeatherByDay
 
 
 class WeatherDto(BaseModel):
@@ -12,6 +12,7 @@ class WeatherDto(BaseModel):
     sunrise: int
     sunset: int
     date: str
+    day_of_week: str
 
     @staticmethod
     def from_business(weather: Weather) -> "WeatherDto":
@@ -23,5 +24,22 @@ class WeatherDto(BaseModel):
             wind_speed=weather.wind_speed,
             sunrise=weather.sunrise,
             sunset=weather.sunset,
-            date=weather.date.to_datetime_string()
+            date=weather.date.to_datetime_string(),
+            day_of_week=weather.date.format("ddd")
+        )
+
+
+class WeatherByDayDto(BaseModel):
+    min: WeatherDto
+    max: WeatherDto
+    date: str
+    day_of_week: str
+
+    @staticmethod
+    def from_business(weather: WeatherByDay) -> "WeatherByDayDto":
+        return WeatherByDayDto(
+            min=WeatherDto.from_business(weather.min),
+            max=WeatherDto.from_business(weather.max),            
+            date=weather.date.to_datetime_string(),
+            day_of_week=weather.date.format("ddd")
         )

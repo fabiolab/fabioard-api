@@ -10,3 +10,9 @@ class Weather(BaseModel):
     sunrise: int
     sunset: int
     date: DateTime
+
+
+class WeatherByDay(BaseModel):
+    min: Weather
+    max: Weather
+    date: DateTime
