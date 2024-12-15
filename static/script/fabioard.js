@@ -14,12 +14,13 @@ ws.onmessage = function(event) {
 
 document.getElementById('fullscreen-button').addEventListener('click', fullScreen);
 
+
 var weatherIconMap = {
     "01d": "☀️",
     "01n": "🌙",
-    "02d": "⛅",
+    "02d": "🌤️",
     "02n": "☁️",
-    "03d": "☁️",
+    "03d": "🌥️",
     "03n": "☁️",
     "04d": "☁️",
     "04n": "☁️",
@@ -99,28 +100,28 @@ function fetchWeather() {
             const forecastIcon1 = document.getElementById('forecastIcon1');
             const forecastDay1 = document.getElementById('forecastDay1');
             forecastTemp1.textContent = data[0].min.temperature + "° " + data[0].max.temperature + "°";
-            forecastIcon1.textContent = weatherIconMap[data[0].min.icon];
+            forecastIcon1.textContent = weatherIconMap[data[0].max.icon];
             forecastDay1.textContent = data[0].day_of_week;
 
             const forecastTemp2 = document.getElementById('forecastTemp2');
             const forecastIcon2 = document.getElementById('forecastIcon2');
             const forecastDay2 = document.getElementById('forecastDay2');
             forecastTemp2.textContent = data[1].min.temperature + "° " + data[1].max.temperature + "°";
-            forecastIcon2.textContent = weatherIconMap[data[1].min.icon];
+            forecastIcon2.textContent = weatherIconMap[data[1].max.icon];
             forecastDay2.textContent = data[1].day_of_week;
 
             const forecastTemp3 = document.getElementById('forecastTemp3');
             const forecastIcon3 = document.getElementById('forecastIcon3');
             const forecastDay3 = document.getElementById('forecastDay3');
             forecastTemp3.textContent = data[2].min.temperature + "° " + data[2].max.temperature + "°";
-            forecastIcon3.textContent = weatherIconMap[data[2].min.icon];
+            forecastIcon3.textContent = weatherIconMap[data[2].max.icon];
             forecastDay3.textContent = data[2].day_of_week;
 
             const forecastTemp4 = document.getElementById('forecastTemp4');
             const forecastIcon4 = document.getElementById('forecastIcon4');
             const forecastDay4 = document.getElementById('forecastDay4');
             forecastTemp4.textContent = data[3].min.temperature + "° " + data[3].max.temperature + "°";
-            forecastIcon4.textContent = weatherIconMap[data[3].min.icon];
+            forecastIcon4.textContent = weatherIconMap[data[3].max.icon];
             forecastDay4.textContent = data[3].day_of_week;
         })
         .catch(error => console.error('Erreur:', error));
@@ -195,12 +196,14 @@ function updateCountdown(departureTime, index) {
 
 function updateDateTime() {
     const now = new Date();
-    const dateTimeElement = document.getElementById('dateTime');
-    dateTimeElement.textContent = formatDate(now) + " " + formatTime(now);  // now.toLocaleString(); //Format de date et heure local
+    const timeElement = document.getElementById('time');
+    const datelement = document.getElementById('date');
+    timeElement.textContent = formatTime(now);
+    datelement.innerHTML = formatDate(now);
 }
 
 function formatDate(date) {
-    const options = { day: 'numeric', month: 'long', year: 'numeric' };
+    const options = { day: 'numeric', month: 'long' };
     const formattedDate = date.toLocaleDateString('fr-FR', options);
     return formattedDate;
 }
@@ -229,16 +232,32 @@ function fullScreen() {
     }
 }
 
+ function nextPic() {
+    fetch('/fabioard-api/v1/slideshow/next', {
+        method: 'POST'
+    })
+    .then(response => console.log('Appel API réussi'))
+    .catch(error => console.error('Erreur lors de l\'appel API:', error));
+}
+
+function previousPic() {
+    fetch('/fabioard-api/v1/slideshow/previous', {
+        method: 'POST'
+    })
+    .then(response => console.log('Appel API réussi'))
+    .catch(error => console.error('Erreur lors de l\'appel API:', error));
+}
+
 // Appels initiaux
 fetchRandomImage();
 fetchWeather();
 fetchBusTime();
 fetchEvents();
-// updateDateTime();
+updateDateTime();
 
 // Appels récurrents
 setInterval(fetchRandomImage, 60000);  // Toutes les 5'
 setInterval(fetchWeather, 600000); // Toutes les 10'
 setInterval(fetchBusTime, 60000); // Toutes les minutes
 setInterval(fetchEvents, 300000);  // Toutes les 5'
-// setInterval(updateDateTime, 60000); // Toutes les minutes
+setInterval(updateDateTime, 60000); // Toutes les minutes
