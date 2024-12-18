@@ -199,11 +199,14 @@ function updateDateTime() {
     const timeElement = document.getElementById('time');
     const datelement = document.getElementById('date');
     timeElement.textContent = formatTime(now);
-    datelement.innerHTML = formatDate(now);
+    datelement.innerHTML = formatDate(now, false);
 }
 
-function formatDate(date) {
+function formatDate(date, year = true) {
     const options = { day: 'numeric', month: 'long' };
+    if (year) {
+        options.year = 'numeric';
+    }
     const formattedDate = date.toLocaleDateString('fr-FR', options);
     return formattedDate;
 }
@@ -256,7 +259,7 @@ fetchEvents();
 updateDateTime();
 
 // Appels récurrents
-setInterval(fetchRandomImage, 60000);  // Toutes les 5'
+setInterval(fetchRandomImage, 300000);  // Toutes les 5'
 setInterval(fetchWeather, 600000); // Toutes les 10'
 setInterval(fetchBusTime, 60000); // Toutes les minutes
 setInterval(fetchEvents, 300000);  // Toutes les 5'
